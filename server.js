@@ -1,16 +1,19 @@
 const bodyParser = require('body-parser'); // npm install body-parser --save
 const express = require('express');     // npm install express --save
+const mongoose = require('mongoose');    // npm install mongoose --save
 
 
 // Set the 'NODE_ENV' variable 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 // MONGOOSE --------------------------------------------------------------------
-// Load the module dependencies
+// DB config
+const dbURI = require('./config/keys').mongoURI;
 
-
-// Create a new Mongoose connection instance
-
+// Connect to MongoDB through a new Mongoose connection instance
+mongoose.connect(dbURI, { useNewUrlParser: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.log(err))
 
 
 // EXPRESS ---------------------------------------------------------------------
