@@ -13,4 +13,10 @@ router.get('/test', (req, res) => res.json({ msg: "Users Works" }));
 // @access  Public
 router.post('/register', users.register);
 
+// ----------------------------------------------------------------------------
+// @route   GET api/users/login
+// @desc    Login User / Returning JWT Token
+// @access  Public
+router.post('/login', users.login);
+
 module.exports = router;
