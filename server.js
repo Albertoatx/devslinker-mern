@@ -2,7 +2,7 @@ const bodyParser = require('body-parser'); // npm install body-parser --save
 const express = require('express');     // npm install express --save
 const mongoose = require('mongoose');    // npm install mongoose --save
 
-// Bring in our route files
+// Load our route files
 const users = require('./routes/api/users.route');
 const profiles = require('./routes/api/profiles.route');
 const posts = require('./routes/api/posts.route');
@@ -31,8 +31,11 @@ const port = process.env.PORT || 5000;
 
 // Here add MIDDLEWARE necessary for REST API's. 
 // -----------------------------------------------------------------------------
-
-
+// bodyParser: Extracts body of an incoming request (JSON, urlencoded) 
+//             and parses it into a JavaScript object
+//             (only handles JSON and urlencoded data, not multipart)
+app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
+app.use(bodyParser.json());                          // parse application/json
 
 // ROUTING  
 //------------------------------------------------------------------------------
@@ -42,7 +45,7 @@ app.get('/', (req, res) => {
   res.send('Helloooooooooo!!!');
 });
 
-// ROUTING: Load the routing files	
+// ROUTING: Use the routing files	
 // -----------------------------------------------------------------------------
 app.use('/api/users', users);
 app.use('/api/profiles', profiles);
