@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser'); // npm install body-parser --save
-const express = require('express');     // npm install express --save
-const mongoose = require('mongoose');    // npm install mongoose --save
+const express = require('express');        // npm install express --save
+const mongoose = require('mongoose');      // npm install mongoose --save
+const passport = require('passport');
 
 // Load our route files
 const users = require('./routes/api/users.route');
@@ -36,6 +37,12 @@ const port = process.env.PORT || 5000;
 //             (only handles JSON and urlencoded data, not multipart)
 app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json());                          // parse application/json
+
+// Passport middleware
+app.use(passport.initialize());
+
+// Passport config
+require('./config/passport-jwt')(passport);
 
 // ROUTING  
 //------------------------------------------------------------------------------

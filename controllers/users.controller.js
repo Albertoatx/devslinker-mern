@@ -7,9 +7,11 @@ const keys = require('../config/keys');
 const User = require('../models/User');
 
 // generate the token using a function instead of building it inside of the controller
+// ----------------------------------------------------------------------------
 const generateToken = (user, res) => {
   // console.log(user.id);
   // console.log(user._id); Both are valid
+
   const payload = {
     id: user.id,
     name: user.name,
@@ -166,5 +168,17 @@ exports.login = (req, res) => {
         }
       });
     });
+};
 
+// ----------------------------------------------------------------------------
+// current - A controller method that recieves 'user' and customize the response
+// ----------------------------------------------------------------------------
+
+exports.current = (req, res) => {
+  // customize 'res' (even if hashed, we don't want to send back the password)
+  res.json({
+    id: req.user.id,
+    name: req.user.name,
+    email: req.user.email
+  });
 };
