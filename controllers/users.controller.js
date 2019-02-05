@@ -3,6 +3,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 
+// Load Input Validation functions
+const validateRegisterInput = require('../validation/register.validator');
+const validateLoginInput = require('../validation/login.validator');
+
 // Load mongoose User model
 const User = require('../models/User');
 
@@ -54,12 +58,20 @@ const generateToken = (user, res) => {
 // ----------------------------------------------------------------------------
 exports.register = (req, res) => {
 
-  User
-    .findOne({ email: req.body.email })
+  const { errors, isValid } = validateRegisterInput(req.body); //destructuring
+
+  // Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  User.findOne({ email: req.body.email })
     .then(user => {
       // if user already exists
       if (user) {
-        return res.status(404).json({ email: "Email already exist" });
+        //return res.status(404).json({ email: "Email already exist" });
+        errors.email = 'Email already exists';
+        return res.status(400).json(errors);
       } else {
         // generate Gravatar URLs in Node.js based on gravatar specs
         const avatar = gravatar.url(req.body.email, {
@@ -102,10 +114,20 @@ exports.register = (req, res) => {
 // ----------------------------------------------------------------------------
 
 exports.registerv2 = async (req, res) => {
+
+  const { errors, isValid } = validateRegisterInput(req.body); //destructuring
+
+  // Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   let user = await User.findOne({ email: req.body.email });
 
   if (user) {
-    return res.status(400).json({ email: "Email already exists" })
+    // return res.status(400).json({ email: "Email already exists" })
+    errors.email = 'Email already exists';
+    return res.status(400).json(errors);
   } else {
     const newUser = new User({
       name: req.body.name,
@@ -126,6 +148,13 @@ exports.registerv2 = async (req, res) => {
 // ----------------------------------------------------------------------------
 exports.login = (req, res) => {
 
+  const { errors, isValid } = validateLoginInput(req.body); //destructuring
+
+  // Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   const email = req.body.email;
   const password = req.body.password;
 
@@ -134,7 +163,9 @@ exports.login = (req, res) => {
     .then(user => {
       // Check for user existence
       if (!user) {
-        return res.status(400).json({ email: 'User not found' });
+        // return res.status(400).json({ email: 'User not found' });
+        errors.email = 'Email not found';
+        return res.status(404).json(errors);
       }
 
       // Check Password
@@ -164,7 +195,9 @@ exports.login = (req, res) => {
           generateToken(user, res);
 
         } else {
-          return res.status(400).json({ password: 'Password incorrect' });
+          // return res.status(400).json({ password: 'Password incorrect' });
+          errors.password = 'Password incorrect';
+          return res.status(400).json(errors);
         }
       });
     });
