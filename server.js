@@ -55,7 +55,7 @@ app.get('/', (req, res) => {
 // ROUTING: Use the routing files	
 // -----------------------------------------------------------------------------
 app.use('/api/users', users);
-app.use('/api/profiles', profiles);
+app.use('/api/profile', profiles); // singular: we never check a list of profiles
 app.use('/api/posts', posts);
 
 // Use the Express application instance to listen to the port
