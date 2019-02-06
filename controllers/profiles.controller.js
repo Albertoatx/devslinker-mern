@@ -6,16 +6,18 @@ const User = require('../models/User');
 const validateProfileInput = require('../validation/profile.validator');
 
 // ----------------------------------------------------------------------------
-// Helper functions
+// Helper functions                                                          //
 // ----------------------------------------------------------------------------
 
 // helper function to remove duplicate values from an array
-uniqueList = (list) => {
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+const uniqueList = (list) => {
   return Array.from(new Set(list));
 }
 
 // helper function to meet DRY by assigning each property (group 'if' statements)
-createObject = (sourceObj, propsArray) => {
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+const createObject = (sourceObj, propsArray) => {
   const newObj = {};
 
   propsArray.forEach(prop => {
@@ -26,10 +28,36 @@ createObject = (sourceObj, propsArray) => {
   return newObj;
 }
 
+// helper function to meet DRY (because 3 different routes do the same query)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+const getSingleUserProfile = (res, query) => {
+
+  const errors = {};
+
+  Profile.findOne(query)
+    .populate('user', ['name', 'avatar']) // checks the 'user' collection
+    .then(profile => {
+
+      if (!profile) {
+        errors.noprofile = 'There is no profile for this user';
+        return res.status(404).json(errors);
+      }
+
+      res.json(profile);
+    })
+    .catch(err => res.status(404).json(err));
+}
+
 // ----------------------------------------------------------------------------
 // getUserProfile - A controller method that retrieves the user profile info
 // ----------------------------------------------------------------------------
 exports.getUserProfile = (req, res) => {
+
+  let query = { user: req.user.id };
+
+  getSingleUserProfile(res, query);
+
+  /* refactor, take out this DB logic (other routes will do same logic)
   const errors = {};
 
   Profile.findOne({ user: req.user.id })
@@ -44,6 +72,56 @@ exports.getUserProfile = (req, res) => {
       res.json(profile);
     })
     .catch(err => res.status(404).json(err));
+    */
+
+}
+
+// ----------------------------------------------------------------------------
+// getUserProfileByHandle - A controller method that retrieves the user profile 
+//                          info using the 'handle' request param
+//                          Code is almost the same that 'getUserProfile'
+// ----------------------------------------------------------------------------
+exports.getUserProfileByHandle = (req, res) => {
+
+  let query = { handle: req.params.handle };
+
+  getSingleUserProfile(res, query);
+}
+
+// ----------------------------------------------------------------------------
+// getUserProfileByUser_id - A controller method that retrieves the user profile 
+//                           info using the 'user_id' request param.
+//                           Code is almost the same that 'getUserProfile' 
+// ----------------------------------------------------------------------------
+exports.getUserProfileByUser_id = (req, res) => {
+
+  let query = { user: req.params.user_id };
+
+  getSingleUserProfile(res, query);
+}
+
+// ----------------------------------------------------------------------------
+// getAllProfiles - A controller method that retrieves a list of user profiles 
+// ----------------------------------------------------------------------------
+exports.getAllProfiles = (req, res) => {
+
+  const errors = {};
+
+  // Profile.find({ handle: "chuck999" })  // only for testing (no results)
+  Profile.find()  // retrieves an empty array if no matches
+    .populate('user', ['name', 'avatar'])
+    .then(profiles => {
+
+      // if (!profiles) {
+      if (!profiles || profiles.length === 0) {
+        errors.noprofile = 'There are no profiles';
+        return res.status(404).json(errors);
+      }
+
+      res.json(profiles);
+    })
+    .catch(err => res.status(400).json(err));
+  //.catch(err => res.status(404).json({ profile: 'There are no profiles' }));
 }
 
 

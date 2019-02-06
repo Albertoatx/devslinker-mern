@@ -19,5 +19,24 @@ router.get('/', passport.authenticate('jwt', { session: false }), profileCtrl.ge
 // @access  Private
 router.post('/', passport.authenticate('jwt', { session: false }), profileCtrl.upsertUserProfile);
 
+// ----------------------------------------------------------------------------
+// @route   GET api/profile/handle/:handle
+// @desc    Get profile by handle
+// @access  Public
+router.get('/handle/:handle', profileCtrl.getUserProfileByHandle);
+
+// ----------------------------------------------------------------------------
+// @route   GET api/profile/user/:user_id
+// @desc    Get profile by user ID
+// @access  Public
+router.get('/user/:user_id', profileCtrl.getUserProfileByUser_id);
+
+// ----------------------------------------------------------------------------
+// @route   GET api/profile/all
+// @desc    Get all profiles
+// @access  Public
+router.get('/all', profileCtrl.getAllProfiles);
+
+
 
 module.exports = router;
