@@ -78,4 +78,21 @@ router.delete('/',
   profileCtrl.deleteUserAndProfile);
 
 
+// ----------------------------------------------------------------------------
+// @route   PUT api/profile/experience/:exp_id
+// @desc    Update experience from profile
+// @access  Private
+router.put('/experience/:exp_id',
+  passport.authenticate('jwt', { session: false }),
+  profileCtrl.updateExperience);
+
+// ----------------------------------------------------------------------------
+// @route   PUT api/profile/education/:edu_id
+// @desc    Update education from profile
+// @access  Private
+router.put('/education/:edu_id',
+  passport.authenticate('jwt', { session: false }),
+  profileCtrl.updateEducation);
+
+
 module.exports = router;

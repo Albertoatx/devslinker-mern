@@ -500,3 +500,118 @@ exports.deleteUserAndProfile = (req, res) => {
     .then(() => User.findOneAndRemove({ _id: req.user.id }))
     .then(() => res.json({ success: true }));
 }
+
+
+// ----------------------------------------------------------------------------
+// updateExperience - A controller method that updates a particular experience   
+//                    from the 'experience' array in the profile collection
+// ----------------------------------------------------------------------------
+
+exports.updateExperience = (req, res) => {
+
+  const { errors, isValid } = validateExperienceInput(req.body);
+
+  // Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  // ES6 way (destructuring because same names)
+  const { title, company, location, from, to, current, description } = req.body;
+  const updatedExperience = {
+    _id: req.params.exp_id,  // to avoid that $set changes the _id value
+    title,
+    company,
+    location,
+    from,
+    to,
+    current,
+    description
+  };
+
+  // 1 DB access: findOneAndUpdate (should create a multikey index on experience array)
+  Profile.findOneAndUpdate(
+    {
+      user: req.user.id,   // Query that the experience exists in the array 
+      experience: { $elemMatch: { $exists: true } },
+      experience: { $elemMatch: { _id: req.params.exp_id } }
+    },
+    {    //'.$' to update only that element in the array
+      $set: { 'experience.$': updatedExperience }
+    },
+    {
+      new: true,  // return the updated version
+    }
+  ).then((profile) => {
+
+    if (!profile) {
+      return res.status(404).json({
+        error: 'Error updating experience: There is no experience with this ID',
+      });
+    }
+
+    res.json(profile);
+  }).catch((err) => {
+    res.status(400).json(err);
+    //res.status(500).json({ 'error': 'error updating experience from profile' });
+  })
+
+}
+
+
+// ----------------------------------------------------------------------------
+// updateEducation - A controller method that updates a particular education   
+//                    from the 'education' array in the profile collection
+// ----------------------------------------------------------------------------
+
+exports.updateEducation = (req, res) => {
+
+  const { errors, isValid } = validateEducationInput(req.body);
+
+  // Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  // ES6 way (destructuring because same names)
+  const { school, degree, fieldofstudy, from, to, current, description } = req.body;
+  const updatedEducation = {
+    _id: req.params.edu_id,  // to avoid that $set changes the _id value
+    school,                  // same as school: req.body.school,
+    degree,
+    fieldofstudy,
+    from,
+    to,
+    current,
+    description
+  };
+
+  // 1 DB access: findOneAndUpdate (should create a multikey index on education array)
+  Profile.findOneAndUpdate(
+    {
+      user: req.user.id,   // Query that the experience exists in the array 
+      education: { $elemMatch: { $exists: true } },
+      education: { $elemMatch: { _id: req.params.edu_id } }
+    },
+    {
+      $set: { 'education.$': updatedEducation }  //'.$' to update only that element in the array
+    },
+    {
+      new: true,  // return the updated version
+    }
+  ).then((profile) => {
+
+    if (!profile) {
+      return res.status(404).json({
+        error: 'Error updating education: There is no education with this ID',
+      });
+    }
+
+    res.json(profile);
+  }).catch((err) => {
+    res.status(400).json(err);
+    //res.status(500).json({ 'error': 'error updating education from profile' });
+  })
+
+}
+
