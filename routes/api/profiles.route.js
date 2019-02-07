@@ -37,6 +37,20 @@ router.get('/user/:user_id', profileCtrl.getUserProfileByUser_id);
 // @access  Public
 router.get('/all', profileCtrl.getAllProfiles);
 
+// ----------------------------------------------------------------------------
+// @route   POST api/profile/experience
+// @desc    Add experience to profile
+// @access  Private
+router.post('/experience',
+  passport.authenticate('jwt', { session: false }),
+  profileCtrl.addExperienceToProfile);
 
+// ----------------------------------------------------------------------------
+// @route   POST api/profile/education
+// @desc    Add education to profile
+// @access  Private
+router.post('/education',
+  passport.authenticate('jwt', { session: false }),
+  profileCtrl.addEducationToProfile);
 
 module.exports = router;

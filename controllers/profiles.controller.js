@@ -4,6 +4,8 @@ const User = require('../models/User');
 
 // Load Input Validation functions
 const validateProfileInput = require('../validation/profile.validator');
+const validateEducationInput = require('../validation/education.validator');
+const validateExperienceInput = require('../validation/experience.validator');
 
 // ----------------------------------------------------------------------------
 // Helper functions                                                          //
@@ -237,5 +239,147 @@ exports.upsertUserProfile = (req, res) => {
       }
     })
     .catch(err => res.status(400).json(err));
+    */
+}
+
+// ----------------------------------------------------------------------------
+// addExperienceToProfile - A controller method that adds a job experience to 
+//                          the user profile collection inside an array
+// ----------------------------------------------------------------------------
+exports.addExperienceToProfile = (req, res) => {
+
+  const { errors, isValid } = validateExperienceInput(req.body);
+
+  // Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  // ES6 way (destructuring because same names)
+  const { title, company, location, from, to, current, description } = req.body;
+  const newExperience = {
+    title,   // same as title: req.body.title,
+    company,
+    location,
+    from,
+    to,
+    current,
+    description
+  };
+
+  // With only 1 DB access: findOneAndUpdate
+  // Note: if we don't allow duplicates this solution does not fit (complex to adapt)
+  Profile.findOneAndUpdate(
+    {
+      user: req.user.id
+    },
+    {
+      $push: { experience: { $each: [newExperience], $position: 0 } }// push at the beginning
+    },
+    {
+      new: true,   // return the updated version
+    }
+  ).then((profile) => {
+    res.json(profile);
+  }).catch((err) => {
+    res.status(400).json(err)
+    //res.status(500).json({ 'error': 'error adding new experience to profile' });
+  })
+
+  // 2 DB operations: findOne + save (if we don't allow duplicates this is easier to adapt)
+  /* 
+  Profile.findOne({ user: req.user.id })
+    .then(profile => {
+
+      // ES6 way (destructuring because same names)
+      const { title, company, location, from, to, current, description } = req.body;
+      const newExperience = {
+        title,  // same as title: title,
+        company,
+        location,
+        from,
+        to,
+        current,
+        description
+      };
+
+      // check if experience is duplicated with another 'findOne' using $elemMatch
+      //experience: { $elemMatch: { $exists: true } }, //
+      //experience: { $elemMatch: { title: req.body.title } },
+
+      // Add new experience to the experience array
+      profile.experience.unshift(newExperience);
+
+      profile.save().then(profile => res.json(profile));
+    });
+  */
+
+}
+
+
+// ----------------------------------------------------------------------------
+// addEducationToProfile - A controller method that adds education experience to 
+//                          the user profile collection inside an education array
+// ----------------------------------------------------------------------------
+exports.addEducationToProfile = (req, res) => {
+
+  const { errors, isValid } = validateEducationInput(req.body);
+
+  // Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  // ES6 way (destructuring because same names)
+  const { school, degree, fieldofstudy, from, to, current, description } = req.body;
+  const newEducation = {
+    school,  // same as school: req.body.school,
+    degree,
+    fieldofstudy,
+    from,
+    to,
+    current,
+    description
+  };
+
+  // With only 1 DB access: findOneAndUpdate
+  Profile.findOneAndUpdate(
+    {
+      user: req.user.id
+    },
+    {
+      $push: { education: { $each: [newEducation], $position: 0 } } // push at the beginning
+    },
+    {
+      new: true  // return the updated version
+    }
+  ).then((profile) => {
+    res.json(profile)
+  }).catch((err) => {
+    res.status(400).json(err)
+    //res.status(500).json({ 'error': 'error adding new education to profile' });
+  })
+
+  /* With 2 DB accesses: findOne + save
+  Profile.findOne({ user: req.user.id })
+    .then(profile => {
+
+      // ES6 way (destructuring because same names)
+      const { school, degree, fieldofstudy, from, to, current, description } = req.body;
+      const newEducation = {
+        school,  // same as school: req.body.school,
+        degree,
+        fieldofstudy,
+        from,
+        to,
+        current,
+        description
+      };
+
+      // Add to edu array
+      profile.education.unshift(newEducation);
+
+      profile.save().then(profile => res.json(profile));
+    });
     */
 }
