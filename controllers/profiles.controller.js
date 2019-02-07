@@ -383,3 +383,120 @@ exports.addEducationToProfile = (req, res) => {
     });
     */
 }
+
+
+// ----------------------------------------------------------------------------
+// deleteExperience - A controller method that deletes a particular experience   
+//                    from the 'experience' array in the profile collection
+// ----------------------------------------------------------------------------
+exports.deleteExperience = (req, res) => {
+
+  // 1 DB access: findOneAndUpdate (should create a multikey index on experience array)
+  Profile.findOneAndUpdate(
+    // { user: req.user.id }, Problem! If the experience doesn't exist it won't give
+    //                        any info about that (returns 'profile' cause it found it)    
+    {
+      user: req.user.id,   // Solution: Query that the experience exists in the array 
+      experience: { $elemMatch: { $exists: true } },
+      experience: { $elemMatch: { _id: req.params.exp_id } }
+    },
+    {
+      $pull: { experience: { _id: req.params.exp_id } }
+    },
+    {
+      new: true,  // return the updated version
+    }
+  ).then((profile) => {
+
+    if (!profile) {
+      return res.status(404).json({
+        error: 'Error deleting experience: There is no experience with this ID',
+      });
+    }
+
+    res.json(profile);
+  }).catch((err) => {
+    res.status(400).json(err);
+    //res.status(500).json({ 'error': 'error deleting experience from profile' });
+  })
+
+
+  // Traversy version (less efficient) -> Map + 2 DB accesses: findOne + save 
+  /*
+  Profile.findOne({ user: req.user.id })
+    .then(profile => {
+
+      // Get index position
+      const removeIndex = profile.experience
+        .map(item => item.id)         // transform to an array of 'item.id'
+        .indexOf(req.params.exp_id);  // get index of the experience to delete
+
+      //  if no matching is found
+      if (removeIndex === -1) {
+        return res.status(404).json({
+          error: 'There is no experience with this ID',
+        });
+      }
+
+      // Splice out of array
+      profile.experience.splice(removeIndex, 1);
+
+      // Alternative to remove the experience without using Map + IndexOf + Splice
+      // NOT TESTED (what happens if no matching is found?)
+      // profile.experience.remove({ _id: req.params.exp_id}); 
+
+      // Save
+      profile.save().then(profile => res.json(profile));
+    })
+    .catch(err => res.status(404).json(err));
+    */
+}
+
+
+// ----------------------------------------------------------------------------
+// deleteEducation - A controller method that deletes a particular education   
+//                    from the 'education' array in the profile collection
+// ----------------------------------------------------------------------------
+
+exports.deleteEducation = (req, res) => {
+
+  // 1 DB access: findOneAndUpdate (should create a multikey index on education array)
+  Profile.findOneAndUpdate(
+    {
+      user: req.user.id,   // Query that the experience exists in the array 
+      education: { $elemMatch: { $exists: true } },
+      education: { $elemMatch: { _id: req.params.edu_id } }
+    },
+    {
+      $pull: { education: { _id: req.params.edu_id } }
+    },
+    {
+      new: true,  // return the updated version
+    }
+  ).then((profile) => {
+
+    if (!profile) {
+      return res.status(404).json({
+        error: 'Error deleting education: There is no education with this ID',
+      });
+    }
+
+    res.json(profile);
+  }).catch((err) => {
+    res.status(400).json(err);
+    //res.status(500).json({ 'error': 'error deleting education from profile' });
+  })
+
+}
+
+// ----------------------------------------------------------------------------
+// deleteUserAndProfile - A controller method that deletes the profile and user 
+//                        from both collections
+// ----------------------------------------------------------------------------
+
+exports.deleteUserAndProfile = (req, res) => {
+
+  Profile.findOneAndRemove({ user: req.user.id })
+    .then(() => User.findOneAndRemove({ _id: req.user.id }))
+    .then(() => res.json({ success: true }));
+}
