@@ -56,4 +56,24 @@ router.post('/like/:post_id',
   postCtrl.likePost
 );
 
+//-----------------------------------------------------------------------------
+// @route   POST api/posts/:post_id/comments
+// @desc    Add comment to post
+// @access  Private
+router.post('/:post_id/comments',
+  passport.authenticate('jwt', { session: false }),
+  postCtrl.addCommentToPost
+);
+
+//-----------------------------------------------------------------------------
+// @route   DELETE api/posts/:post_id/comments/:comment_id
+// @desc    Remove comment from post (user must be owner of the comment)
+// @access  Private
+router.delete(
+  '/:post_id/comments/:comment_id',
+  passport.authenticate('jwt', { session: false }),
+  postCtrl.deleteCommentFromPost
+);
+
+
 module.exports = router;
