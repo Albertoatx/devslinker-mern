@@ -167,3 +167,37 @@ exports.deletePost = (req, res) => {
   });
   */
 }
+
+
+// ----------------------------------------------------------------------------
+// likeLogic - A controller method to Like or Unlike a post by using post_id
+//              request param. 
+// ----------------------------------------------------------------------------
+exports.likePost = (req, res) => {
+
+  Post.findById(req.params.post_id)
+    .then(post => {
+
+      if (!post) {
+        return res.status(404).json({ nopost: 'No post found' });
+      }
+
+      // Post exists -> check if the user has already liked the post
+      // (More efficient to use 'findIndex' than filter + map + indexOf)
+      const indexOfUser = post.likes.findIndex(
+        (like) => like.user.toString() === req.user.id
+      );
+
+      // To be able to like or unlike in the same route
+      (indexOfUser === -1)
+        ? post.likes.unshift({ user: req.user.id }) // not found -> like the post
+        : post.likes.splice(indexOfUser, 1);        // found     -> unlike the post
+
+      // save changes into MongoDB
+      post.save()
+        .then(post => res.json(post))
+
+    })
+    .catch(err => res.status(400).json(err));
+  //.catch(err => res.status(404).json({ postnotfound: 'No post found' }));
+}

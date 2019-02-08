@@ -46,4 +46,14 @@ router.delete('/:post_id',
   postCtrl.deletePost
 );
 
+//-----------------------------------------------------------------------------
+// @route   POST api/posts/like/:post_id
+// @desc    Like post
+// @access  Private
+// I used just one route for both like and unlike 
+router.post('/like/:post_id',
+  passport.authenticate('jwt', { session: false }),
+  postCtrl.likePost
+);
+
 module.exports = router;
