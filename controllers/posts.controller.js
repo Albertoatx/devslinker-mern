@@ -349,3 +349,49 @@ exports.deleteCommentFromPost = (req, res) => {
 
 }
 
+
+
+// ----------------------------------------------------------------------------
+// updateCommentFromPost - A controller method which updates a comment from a 
+//                         post ('req.params' with post_id and comment_id )
+//                         Check that ONLY owner of the comment can delete it
+// ----------------------------------------------------------------------------
+exports.updateCommentFromPost = (req, res) => {
+
+  const { errors, isValid } = validatePostInput(req.body);
+
+  // Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  // 2 DB acceses but more control about error messages
+  Post.findById(req.params.post_id)
+    .then(post => {
+
+      if (!post) {
+        return res.status(404).json({ nopost: 'No post found' });
+      }
+
+      // Check if the comment exists ('findIndex' better than filter + map + indexOf)
+      const indexOfComment = post.comments.findIndex(
+        (comment) => comment._id.toString() === req.params.comment_id
+      );
+
+      if (indexOfComment === -1)
+        return res.status(404).json({ commentnotexists: 'Comment does not exist' });
+
+      // comment exists -> Make sure that only the comment owner can delete it
+      if (post.comments[indexOfComment].user.toString() !== req.user.id)
+        return res.status(401).json({ notauthorized: "User not authorized to update comment" });
+
+      // $set updated values
+      post.comments[indexOfComment].text = req.body.text;
+
+      // save changes into MongoDB
+      post.save()
+        .then(post => res.json(post))
+
+    })
+    .catch(err => res.status(400).json(err));
+}

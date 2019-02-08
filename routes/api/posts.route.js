@@ -75,5 +75,14 @@ router.delete(
   postCtrl.deleteCommentFromPost
 );
 
+//-----------------------------------------------------------------------------
+// @route   PUT api/posts/:post_id/comments/:comment_id
+// @desc    Update a comment from a post (user must be owner of the comment)
+// @access  Private
+router.put('/:post_id/comments/:comment_id',
+  passport.authenticate('jwt', { session: false }),
+  postCtrl.updateCommentFromPost
+);
+
 
 module.exports = router;
