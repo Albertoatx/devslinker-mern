@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+import classnames from 'classnames';
 
 class Register extends Component {
 
@@ -38,11 +40,16 @@ class Register extends Component {
       password2: this.state.password2
     };
 
-    console.log(newUser);
+    // we don't have to do a localhost:5000 because we put that in a proxy value
+    axios.post('api/users/register', newUser)
+      .then(result => console.log(result.data))
+      .catch(err => this.setState({ errors: err.response.data }))
+    //.catch(err => console.log(err.response.data)) // to console log our errors
   }
 
   // render
   render() {
+    const { errors } = this.state; /* errors = this.state.errors */
 
     return (
       <div className="register">
@@ -58,45 +65,53 @@ class Register extends Component {
 
                 <div className="form-group">
                   <input
-                    className="form-control form-control-lg"
+                    className={classnames("form-control form-control-lg", { 'is-invalid': errors.name })}
                     placeholder="Name"
                     name="name"
                     type="text"
                     value={this.state.name}
                     onChange={this.onChange}
                   />
+                  {errors.name && (<div className='invalid-feedback'>{errors.name}</div>)}
                 </div>
+
                 <div className="form-group">
                   <input
-                    className="form-control form-control-lg"
+                    className={classnames("form-control form-control-lg", { 'is-invalid': errors.email })}
                     placeholder="Email"
                     name="email"
                     type="email"
                     value={this.state.email}
                     onChange={this.onChange}
                   />
+                  {errors.email && (<div className='invalid-feedback'>{errors.email}</div>)}
                   <small className="form-text text-muted">This site uses Gravatar so if you want a profile image, use a Gravatar email</small>
                 </div>
+
                 <div className="form-group">
                   <input
-                    className="form-control form-control-lg"
+                    className={classnames("form-control form-control-lg", { 'is-invalid': errors.password })}
                     placeholder="Password"
                     name="password"
                     type="password"
                     value={this.state.password}
                     onChange={this.onChange}
                   />
+                  {errors.password && (<div className='invalid-feedback'>{errors.password}</div>)}
                 </div>
+
                 <div className="form-group">
                   <input
-                    className="form-control form-control-lg"
+                    className={classnames("form-control form-control-lg", { 'is-invalid': errors.password2 })}
                     placeholder="Confirm Password"
                     name="password2"
                     type="password"
                     value={this.state.password2}
                     onChange={this.onChange}
                   />
+                  {errors.password2 && (<div className='invalid-feedback'>{errors.password2}</div>)}
                 </div>
+
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>
