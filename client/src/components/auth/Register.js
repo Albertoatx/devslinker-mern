@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import classnames from 'classnames';
+import { connect } from 'react-redux';  // to connect this component to the redux store
+import { withRouter } from 'react-router-dom'; // to redirect from inside an Action
 
+import classnames from 'classnames';
+import PropTypes from 'prop-types';       // define types for 'props' 
+
+// Action to dispatch (will be the 'mapDispatchToProps' param)
+import { registerUserAction } from '../../actions/authActions';
+
+// COMPONENT
 class Register extends Component {
 
   /* we don't need a constructor to bind 'this' cause we use arrow functions
@@ -21,8 +28,19 @@ class Register extends Component {
     email: '',
     password: '',
     password2: '',
-    errors: {}
+    //errors: {}
   };
+
+  // Will be deprecated in React 17
+  /*
+  componentWillReceiveProps(nextProps) {
+    // test the 'errors' property after being Mapped to 'props'
+    if (nextProps.errors) {
+      // set the errors in the 'component state'
+      this.setState({ errors: nextProps.errors });
+    }
+  }
+  */
 
   // Put whatever is typed in our input fields in our component 'state'
   onChange = e => {
@@ -40,16 +58,13 @@ class Register extends Component {
       password2: this.state.password2
     };
 
-    // we don't have to do a localhost:5000 because we put that in a proxy value
-    axios.post('api/users/register', newUser)
-      .then(result => console.log(result.data))
-      .catch(err => this.setState({ errors: err.response.data }))
-    //.catch(err => console.log(err.response.data)) // to console log our errors
+    this.props.registerUser(newUser, this.props.history);
   }
 
   // render
   render() {
-    const { errors } = this.state; /* errors = this.state.errors */
+    // const { errors } = this.state; /* errors = this.state.errors */
+    const { errors } = this.props; /* with this I don't need 'componentWillReceiveProps' */
 
     return (
       <div className="register">
@@ -122,4 +137,38 @@ class Register extends Component {
   }
 }
 
-export default Register;
+// Define types (strings, etc) to know what types to expect for our incoming data 
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,  // type func 
+  auth: PropTypes.object.isRequired,        // type object
+  errors: PropTypes.object.isRequired       // type object
+};
+
+// Map 'Redux state' to the 'props' of this component so that we can use them
+//      here by using 'this.props.auth' and 'this.props.errors'
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+
+// Using mapDispatchToProps() STANDARD Notation
+// Attach 'Actions' to 'props' of this component so that it will dispatch them
+//    That way those actions can be called from our components (here in 'on submit') 
+//   'dispatch' is a function provided to us by the Redux store.  
+// ----------------------------------------------------------------------------  
+const mapDispatchToProps = (dispatch) => {
+
+  return {
+    // deletePost: (id) => dispatch({type: 'DELETE_POST', id: id})  // example
+    registerUser: (userData, history) => dispatch(registerUserAction(userData, history))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Register));
+
+// Using mapDispatchToProps() SHORTHAND Notation!
+// (avoid the boilerplate code in mapDispatchToProps() for the common case  )
+// (where the 'action creator arguments' match the 'callback prop arguments')
+// ----------------------------------------------------------------------------
+//export default connect(mapStateToProps, { registerUser: registerUserAction })(withRouter(Register)); 
