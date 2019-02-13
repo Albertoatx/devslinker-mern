@@ -54,7 +54,7 @@ export const registerUserActionV2 = (userData, history) => dispatch => {
 
 // Login User Action (version without 'currying')
 // ----------------------------------------------------------------------------
-export const loginUserAction = userData => {
+export const loginUserAction = (userData, history) => {
 
   return function (dispatch) {
     // Call API endpoint
@@ -75,6 +75,8 @@ export const loginUserAction = userData => {
 
         // Set current user
         dispatch(setCurrentUser(decodedToken));
+
+        history.push('/dashboard');
       })
       .catch(err =>
         dispatch({
