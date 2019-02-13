@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-import { GET_ERRORS } from './actionTypes';
+import setAuthToken from '../utils/setAuthToken';
+import jwt_decode from 'jwt-decode';
+
+import { GET_ERRORS, SET_CURRENT_USER } from './actionTypes';
 
 /** 
  * NOTES about 'redux-thunk'
@@ -48,4 +51,45 @@ export const registerUserActionV2 = (userData, history) => dispatch => {
     );
 };
 
+
+// Login User Action (version without 'currying')
+// ----------------------------------------------------------------------------
+export const loginUserAction = userData => {
+
+  return function (dispatch) {
+    // Call API endpoint
+    axios
+      .post('/api/users/login', userData)
+      .then(res => {
+        // Save to localStorage
+        const { token } = res.data;
+
+        // Set token to Local Storage (only stores strings)
+        localStorage.setItem('jwtToken', token);
+
+        // Set token to Auth header (function in 'utils' folder)
+        setAuthToken(token);
+
+        // Decode token to get user data in the token
+        const decodedToken = jwt_decode(token);
+
+        // Set current user
+        dispatch(setCurrentUser(decodedToken));
+      })
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  }
+}
+
+// Set logged in user - dispatch to a reducer
+export const setCurrentUser = (decodedToken) => {
+  return {
+    type: SET_CURRENT_USER,
+    payload: decodedToken
+  };
+};
 
