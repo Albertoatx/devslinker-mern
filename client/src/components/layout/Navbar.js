@@ -7,13 +7,15 @@ import PropTypes from 'prop-types';  // define types for our 'props'
 
 // Import 'action creator' function
 import { logoutUserAction } from '../../actions/authActions';
+import { clearCurrentProfile } from '../../actions/profileActions';
 
 // COMPONENT
 class Navbar extends Component {
 
-  //onLogoutClick dispatch 'logoutUser'
+  //onLogoutClick dispatch 'clearCurrentProfile' before 'logoutUser'
   onLogoutClick = (e) => {
     e.preventDefault();
+    this.props.clearCurrentProfile(); /* profile state set to null */
     this.props.logoutUser();
   }
 
@@ -81,6 +83,7 @@ class Navbar extends Component {
 // Define types (strings, etc) to know what types to expect for our incoming data 
 Navbar.propTypes = {
   logoutUser: PropTypes.func.isRequired,    // type function
+  clearCurrentProfile: PropTypes.func.isRequired,    // type function
   auth: PropTypes.object.isRequired,        // type object
 };
 
@@ -98,7 +101,8 @@ const mapStateToProps = (state) => ({
 // ----------------------------------------------------------------------------  
 const mapDispatchToProps = (dispatch) => {
   return {
-    logoutUser: () => dispatch(logoutUserAction())
+    logoutUser: () => dispatch(logoutUserAction()),
+    clearCurrentProfile: () => dispatch(clearCurrentProfile()),
   }
 };
 
@@ -108,4 +112,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
 // (avoid the boilerplate code in mapDispatchToProps() for the common case  )
 // (where the 'action creator arguments' match the 'callback prop arguments')
 // ----------------------------------------------------------------------------
-//export default connect(mapStateToProps, { logoutUser: logoutUserAction })(Navbar);
+//export default connect(mapStateToProps, { 
+//  logoutUser: logoutUserAction, clearCurrentProfile: clearCurrentProfile })(Navbar);
