@@ -1,4 +1,4 @@
-import { GET_ERRORS } from '../actions/actionTypes';
+import { GET_ERRORS, CLEAR_ERRORS } from '../actions/actionTypes';
 
 const initialState = {};
 
@@ -8,6 +8,9 @@ export default function (state = initialState, action) {
 
     case GET_ERRORS:
       return action.payload; // the payload is going to include the errors object
+
+    case CLEAR_ERRORS:
+      return {};
 
     default:
       return state;

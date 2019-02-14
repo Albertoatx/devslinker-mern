@@ -3,7 +3,7 @@ import axios from 'axios';
 import setAuthToken from '../utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
 
-import { GET_ERRORS, SET_CURRENT_USER } from './actionTypes';
+import { GET_ERRORS, SET_CURRENT_USER, CLEAR_ERRORS } from './actionTypes';
 
 /** 
  * NOTES about 'redux-thunk'
@@ -15,11 +15,22 @@ import { GET_ERRORS, SET_CURRENT_USER } from './actionTypes';
  *  -------------------------------------------------------------------------*/
 
 
+// Clear errors (used mainly when submitting forms)
+// ---------------------------------------------------------------------------
+export const clearErrors = () => {
+  return {
+    type: CLEAR_ERRORS
+  };
+};
+
 // Register User Action (version without 'currying')
 // ----------------------------------------------------------------------------
 export const registerUserAction = function (userData, history) {
 
   return function (dispatch) {
+
+    dispatch(clearErrors());
+
     // Call API endpoint
     axios.post('/api/users/register', userData)
       //.then(res => console.log(res))
@@ -36,6 +47,8 @@ export const registerUserAction = function (userData, history) {
 
 // Register User Action (equvalente verison using "currying") 
 export const registerUserActionV2 = (userData, history) => dispatch => {
+
+  dispatch(clearErrors());
 
   // Call API endpoint
   axios
@@ -57,6 +70,9 @@ export const registerUserActionV2 = (userData, history) => dispatch => {
 export const loginUserAction = (userData, history) => {
 
   return function (dispatch) {
+
+    dispatch(clearErrors());
+
     // Call API endpoint
     axios
       .post('/api/users/login', userData)
@@ -94,4 +110,3 @@ export const setCurrentUser = (decodedToken) => {
     payload: decodedToken
   };
 };
-
