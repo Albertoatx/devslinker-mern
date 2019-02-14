@@ -4,7 +4,9 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux'; // to connect this component to the redux store
 
 import PropTypes from 'prop-types';  // define types for 'props' 
-import classnames from 'classnames'; // use in the render() method
+//import classnames from 'classnames'; // use in the render() method
+
+import TextFieldGroup from '../common/TextFieldGroup';
 
 // Import 'action creator' function
 import { loginUserAction } from '../../actions/authActions';
@@ -77,7 +79,8 @@ class Login extends Component {
              </p>
 
               <form onSubmit={this.onSubmit}>
-                <div className="form-group">
+
+                {/* <div className="form-group">
                   <input
                     className={classnames("form-control form-control-lg", { 'is-invalid': errors.email })}
                     placeholder="Email"
@@ -87,9 +90,18 @@ class Login extends Component {
                     onChange={this.onChange}
                   />
                   {errors.email && (<div className='invalid-feedback'>{errors.email}</div>)}
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <TextFieldGroup
+                  placeholder="Email"
+                  name="email"
+                  type="email"
+                  value={this.state.email}
+                  onChange={this.onChange}
+                  error={errors.email}
+                />
+
+                {/* <div className="form-group">
                   <input
                     className={classnames("form-control form-control-lg", { 'is-invalid': errors.password })}
                     placeholder="Password"
@@ -99,7 +111,16 @@ class Login extends Component {
                     onChange={this.onChange}
                   />
                   {errors.password && (<div className='invalid-feedback'>{errors.password}</div>)}
-                </div>
+                </div> */}
+
+                <TextFieldGroup
+                  placeholder="Password"
+                  name="password"
+                  type="password"
+                  value={this.state.password}
+                  onChange={this.onChange}
+                  error={errors.password}
+                />
 
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>

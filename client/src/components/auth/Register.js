@@ -6,6 +6,8 @@ import { Redirect } from 'react-router-dom';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';       // define types for 'props' 
 
+import TextFieldGroup from '../common/TextFieldGroup';
+
 // Action to dispatch (will be the 'mapDispatchToProps' param)
 import { registerUserAction } from '../../actions/authActions';
 
@@ -95,7 +97,16 @@ class Register extends Component {
 
               <form onSubmit={this.onSubmit}>
 
-                <div className="form-group">
+                <TextFieldGroup
+                  placeholder="Name"
+                  name="name"
+                  type="text"
+                  value={this.state.name}
+                  onChange={this.onChange}
+                  error={errors.name}
+                />
+
+                {/* <div className="form-group">
                   <input
                     className={classnames("form-control form-control-lg", { 'is-invalid': errors.name })}
                     placeholder="Name"
@@ -105,9 +116,19 @@ class Register extends Component {
                     onChange={this.onChange}
                   />
                   {errors.name && (<div className='invalid-feedback'>{errors.name}</div>)}
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <TextFieldGroup
+                  placeholder="Email"
+                  name="email"
+                  type="email"
+                  value={this.state.email}
+                  onChange={this.onChange}
+                  error={errors.email}
+                  info="This site uses Gravatar so if you want a profile image, use a Gravatar email"
+                />
+
+                {/* <div className="form-group">
                   <input
                     className={classnames("form-control form-control-lg", { 'is-invalid': errors.email })}
                     placeholder="Email"
@@ -118,9 +139,18 @@ class Register extends Component {
                   />
                   {errors.email && (<div className='invalid-feedback'>{errors.email}</div>)}
                   <small className="form-text text-muted">This site uses Gravatar so if you want a profile image, use a Gravatar email</small>
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <TextFieldGroup
+                  placeholder="Password"
+                  name="password"
+                  type="password"
+                  value={this.state.password}
+                  onChange={this.onChange}
+                  error={errors.password}
+                />
+
+                {/* <div className="form-group">
                   <input
                     className={classnames("form-control form-control-lg", { 'is-invalid': errors.password })}
                     placeholder="Password"
@@ -130,9 +160,18 @@ class Register extends Component {
                     onChange={this.onChange}
                   />
                   {errors.password && (<div className='invalid-feedback'>{errors.password}</div>)}
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <TextFieldGroup
+                  placeholder="Confirm Password"
+                  name="password2"
+                  type="password"
+                  value={this.state.password2}
+                  onChange={this.onChange}
+                  error={errors.password2}
+                />
+
+                {/* <div className="form-group">
                   <input
                     className={classnames("form-control form-control-lg", { 'is-invalid': errors.password2 })}
                     placeholder="Confirm Password"
@@ -142,7 +181,7 @@ class Register extends Component {
                     onChange={this.onChange}
                   />
                   {errors.password2 && (<div className='invalid-feedback'>{errors.password2}</div>)}
-                </div>
+                </div> */}
 
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
