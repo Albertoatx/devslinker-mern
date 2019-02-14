@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';  // to connect this component to the redux store
 import { withRouter } from 'react-router-dom'; // to redirect from inside an Action
+import { Redirect } from 'react-router-dom';
 
 import classnames from 'classnames';
 import PropTypes from 'prop-types';       // define types for 'props' 
@@ -42,6 +43,16 @@ class Register extends Component {
   }
   */
 
+  // To secure 'login' route when we are already logged in
+  // hook 'componentDidMount' is only called once per life cycle
+  /*
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    } 
+  }
+  */
+
   // Put whatever is typed in our input fields in our component 'state'
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -65,6 +76,12 @@ class Register extends Component {
   render() {
     // const { errors } = this.state; /* errors = this.state.errors */
     const { errors } = this.props; /* with this I don't need 'componentWillReceiveProps' */
+
+    // Secure 'register' route when we are already logged in 
+    // (an alternative to 'componentDidMount')
+    if (this.props.auth.isAuthenticated) {
+      return <Redirect to="/dashboard" />;
+    }
 
     return (
       <div className="register">

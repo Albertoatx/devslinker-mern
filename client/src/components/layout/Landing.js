@@ -1,8 +1,32 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
+import { connect } from 'react-redux'; // to connect this component to the redux store
+
+import PropTypes from 'prop-types';  // define types for our 'props' 
+
+
+// COMPONENT
 class Landing extends Component {
+
+  // To secure landing '/' route when we are already logged in
+  // hook 'componentDidMount' is only called once per life cycle
+  /*
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    } 
+  }
+  */
+
   render() {
+    // Secure landing '/' route when we are already logged in
+    // (this is an alternative to 'componentDidMount')
+    if (this.props.auth.isAuthenticated) {
+      return <Redirect to="/dashboard" />;
+    }
+
     return (
       <div className="landing">
         <div className="dark-overlay landing-inner text-light">
@@ -24,4 +48,16 @@ class Landing extends Component {
   }
 }
 
-export default Landing;
+// Define types (strings, etc) to know what types to expect for our incoming data 
+Landing.propTypes = {
+  auth: PropTypes.object.isRequired,        // type object
+};
+
+// Map 'Redux state' to the 'props' of this component so that we can use them
+//      here by using 'this.props.auth'
+// ----------------------------------------------------------------------------
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Landing);

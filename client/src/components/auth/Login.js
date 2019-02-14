@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import { connect } from 'react-redux'; // to connect this component to the redux store
 
@@ -46,8 +47,24 @@ class Login extends Component {
   }
   */
 
+  // To secure 'login' route when we are already logged in
+  // hook 'componentDidMount' is only called once per life cycle
+  /*
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    } 
+  }
+  */
+
   render() {
     const { errors } = this.props;
+
+    // Secure 'login' route when we are already logged in
+    // (this is an alternative to 'componentDidMount')
+    if (this.props.auth.isAuthenticated) {
+      return <Redirect to="/dashboard" />;
+    }
 
     return (
       <div className="login">

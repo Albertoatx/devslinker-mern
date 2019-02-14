@@ -110,3 +110,25 @@ export const setCurrentUser = (decodedToken) => {
     payload: decodedToken
   };
 };
+
+
+// Logout User Action (version without 'currying')
+// ----------------------------------------------------------------------------
+export const logoutUserAction = () => {
+
+  return function (dispatch) {
+    // Remove token from localStorage
+    localStorage.removeItem('jwtToken');
+
+    // Remove the Auth header for future requests
+    setAuthToken(false);
+
+    // Set current user to {} which will set 'isAuthenticated' to false
+    dispatch(setCurrentUser({}));
+
+    // redirect to login (uses 'window' object:  Navbar component has no history
+    // in the 'props' because it is not a <Route> component. 
+    // An alternative is to wrap Navbar with 'withRouter' but I prefer this)
+    window.location.href = "/login";
+  }
+};
