@@ -102,7 +102,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     logoutUser: () => dispatch(logoutUserAction()),
-    clearCurrentProfile: () => dispatch(clearCurrentProfile()),
+    clearCurrentProfile: () => dispatch(clearCurrentProfile())
   }
 };
 
