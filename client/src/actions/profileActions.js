@@ -5,6 +5,8 @@ import {
   GET_PROFILES,
   PROFILE_LOADING,
   CLEAR_CURRENT_PROFILE,
+  GET_ERRORS,
+  CLEAR_ERRORS
 } from './actionTypes';
 
 /**
@@ -28,6 +30,14 @@ export const setProfileLoading = () => {
 export const clearCurrentProfile = () => {
   return {
     type: CLEAR_CURRENT_PROFILE
+  };
+};
+
+// Clear errors (used mainly when submitting forms)
+// ---------------------------------------------------------------------------
+const clearErrors = () => {
+  return {
+    type: CLEAR_ERRORS
   };
 };
 
@@ -56,3 +66,23 @@ export const getCurrentProfileAction = () => {
       )
   }
 }
+
+// Create Profile Action (version without 'currying')
+// ----------------------------------------------------------------------------
+export const createProfileAction = (profileData, history) => {
+
+  return function (dispatch) {
+
+    dispatch(clearErrors());
+
+    axios
+      .post('/api/profile', profileData)
+      .then(res => history.push('/dashboard'))
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  }
+};

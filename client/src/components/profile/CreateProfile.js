@@ -8,6 +8,9 @@ import TextAreaFieldGroup from '../common/TextAreaFieldGroup';
 import SelectListGroup from '../common/SelectListGroup';
 import InputGroup from '../common/InputGroup';
 
+// Action to dispatch (will be the 'mapDispatchToProps' param)
+import { createProfileAction } from '../../actions/profileActions';
+
 
 // COMPONENT
 class CreateProfile extends Component {
@@ -39,7 +42,7 @@ class CreateProfile extends Component {
 
 
   // When we click on Submit button
-  onSubmit(e) {
+  onSubmit = e => {
     e.preventDefault();
 
     const profileData = {
@@ -58,18 +61,19 @@ class CreateProfile extends Component {
       instagram: this.state.instagram
     };
 
-    // this.props.createProfile(profileData, this.props.history);
+    // We DON'T need 'withRouter' because component 'CreateProfile' is routed by <Route>
+    this.props.createProfile(profileData, this.props.history);
   }
 
 
   render() {
     const { errors } = this.props; /* with this I don't need 'componentWillReceiveProps' */
-
+     
     const { displaySocialInputs } = this.state;
 
     // options to select for status
     const options = [
-      { label: '* Select Professional Status', value: 0 },
+      { label: '* Select Professional Status', value: '' },
       { label: 'Developer', value: 'Developer' },
       { label: 'Junior Developer', value: 'Junior Developer' },
       { label: 'Senior Developer', value: 'Senior Developer' },
@@ -155,7 +159,7 @@ class CreateProfile extends Component {
                   type="text"
                   value={this.state.handle}
                   onChange={this.onChange}
-                  error={errors.name}
+                  error={errors.handle}
                   info="A unique handle for your profile URL. Your full name, company name, nickname"
                 />
 
@@ -253,7 +257,8 @@ class CreateProfile extends Component {
 // Define types (strings, etc) to know what types to expect for our incoming data 
 CreateProfile.propTypes = {
   profile: PropTypes.object.isRequired,       // type object
-  errors: PropTypes.object.isRequired         // type object
+  errors: PropTypes.object.isRequired,        // type object
+  createProfile: PropTypes.func.isRequired
 };
 
 // Map 'Redux state' to the 'props' of this component so that we can use them
@@ -263,5 +268,22 @@ const mapStateToProps = (state) => ({
   errors: state.errors
 });
 
+// Using mapDispatchToProps() STANDARD Notation
+// Attach 'Actions' to 'props' of this component so that it will dispatch them
+//    That way those actions can be called from our components (here in 'on submit') 
+//   'dispatch' is a function provided to us by the Redux store.  
+// ----------------------------------------------------------------------------  
+const mapDispatchToProps = (dispatch) => {
 
-export default connect(mapStateToProps)(CreateProfile);
+  return {
+    createProfile: (profileData, history) => dispatch(createProfileAction(profileData, history))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateProfile);
+
+// Using mapDispatchToProps() SHORTHAND Notation!
+// (avoid the boilerplate code in mapDispatchToProps() for the common case  )
+// (where the 'action creator arguments' match the 'callback prop arguments')
+// ----------------------------------------------------------------------------
+//export default connect(mapStateToProps, { createProfile: createProfileAction })(Register); 
