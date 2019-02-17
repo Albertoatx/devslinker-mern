@@ -129,6 +129,7 @@ export const logoutUserAction = () => {
     // redirect to login (uses 'window' object:  Navbar component has no history
     // in the 'props' because it is not a <Route> component. 
     // An alternative is to wrap Navbar with 'withRouter' but I prefer this)
-    window.location.href = "/login";
+    // NOT NEEDED since we created 'PrivateRoute' Component
+    //window.location.href = "/login";
   }
 };

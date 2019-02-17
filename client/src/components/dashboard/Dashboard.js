@@ -6,9 +6,11 @@ import PropTypes from 'prop-types';
 
 // Import custom components
 import Spinner from '../common/Spinner';
+import ProfileActions from './ProfileActions';
 
 // Import 'action creator' function
 import { getCurrentProfileAction } from '../../actions/profileActions';
+import { deleteUserAndProfileAction } from '../../actions/profileActions';
 
 
 // COMPONENT
@@ -18,6 +20,12 @@ class Dashboard extends Component {
   componentDidMount() {
     this.props.getCurrentProfile();
   }
+
+  // delete user and profile
+  onDeleteClick = e => {
+    this.props.deleteUserAndProfile();
+  }
+
 
   render() {
 
@@ -31,7 +39,23 @@ class Dashboard extends Component {
     } else {
       // Check if logged in user has profile data
       if (Object.keys(profile).length > 0) {
-        dashboardContent = <h4>TODO: DISPLAY PROFILE</h4>
+        dashboardContent = (
+          <div>
+            <p className="lead text-muted">
+              Welcome <Link to={`/profile/${profile.handle}`}>{user.name}</Link>
+            </p>
+            < ProfileActions />
+            {/* TODO: Experience and Education */}
+
+            <div style={{ marginBottom: '60px' }} />  {/* to move button down */}
+            <button
+              onClick={this.onDeleteClick}
+              className="btn btn-danger"
+            >
+              Delete My Account
+            </button>
+          </div>
+        );
       } else {
         // User is logged in but has no profile
         dashboardContent = (
@@ -64,6 +88,7 @@ class Dashboard extends Component {
 // Define types (strings, etc) to know what types to expect for our incoming data 
 Dashboard.propTypes = {
   getCurrentProfile: PropTypes.func.isRequired,  // type func 
+  deleteUserAndProfile: PropTypes.func.isRequired,  // type func 
   auth: PropTypes.object.isRequired,             // type object
   profile: PropTypes.object.isRequired           // type object
 };
@@ -85,7 +110,8 @@ const mapStateToProps = (state) => ({
 // ----------------------------------------------------------------------------  
 const mapDispatchToProps = (dispatch) => {
   return {
-    getCurrentProfile: () => dispatch(getCurrentProfileAction())
+    getCurrentProfile: () => dispatch(getCurrentProfileAction()),
+    deleteUserAndProfile: () => dispatch(deleteUserAndProfileAction())
   }
 };
 
@@ -95,5 +121,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 // (avoid the boilerplate code in mapDispatchToProps() for the common case  )
 // (where the 'action creator arguments' match the 'callback prop arguments')
 // ----------------------------------------------------------------------------
-//export default connect(mapStateToProps, { getCurrentProfile: getCurrentProfileAction })(Dashboard);
+//export default connect(mapStateToProps, { 
+// getCurrentProfile: getCurrentProfileAction, 
+// deleteUserAndProfile: deleteUserAndProfileAction 
+// })(Dashboard);
 

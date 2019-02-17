@@ -6,8 +6,10 @@ import {
   PROFILE_LOADING,
   CLEAR_CURRENT_PROFILE,
   GET_ERRORS,
-  CLEAR_ERRORS
+  CLEAR_ERRORS,
 } from './actionTypes';
+
+import { logoutUserAction } from './authActions';
 
 /**
  * NOTES about 'redux-thunk'
@@ -84,5 +86,34 @@ export const createProfileAction = (profileData, history) => {
           payload: err.response.data
         })
       );
+  }
+};
+
+// Delete User and Profile Action - (version without 'currying')
+// ----------------------------------------------------------------------------
+export const deleteUserAndProfileAction = () => {
+
+  return function (dispatch) {
+
+    if (window.confirm('Are you sure? This can NOT be undone!')) {
+      axios
+        .delete('/api/profile')
+        .then(res =>
+          /* does NOT delete Token from Local storage
+          dispatch({
+            type: SET_CURRENT_USER,
+            payload: {}
+          }) */
+
+          // deletes token from local storage + dispatches SET_CURRENT_USER
+          dispatch(logoutUserAction())
+        )
+        .catch(err =>
+          dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+          })
+        );
+    }
   }
 };
