@@ -8,6 +8,9 @@ import PropTypes from 'prop-types';
 import TextFieldGroup from '../common/TextFieldGroup';
 import TextAreaFieldGroup from '../common/TextAreaFieldGroup';
 
+// Action to dispatch (will be the 'mapDispatchToProps' param)
+import { addExperienceAction } from '../../actions/profileActions';
+
 
 // COMPONENT
 class AddExperience extends Component {
@@ -31,17 +34,32 @@ class AddExperience extends Component {
 
   // Change 'current' and 'disabled' to the opposite of what they are
   onCheck = e => {
-    this.setState({
+    this.setState((prevState) => ({
+      /* clear 'To Date' input if we pass from disabled false to true */
+      to: (prevState.disabled ? this.state.to : ''),
       disabled: !this.state.disabled,
-      currentJob: !this.state.currentJob
-    });
+      currentJob: !this.state.currentJob,
+    }));
   }
 
   // When we click on Submit button
   onSubmit = e => {
     e.preventDefault();
 
-    console.log();
+    // experience to add 
+    const newExperience = {
+      company: this.state.company,
+      title: this.state.title,
+      location: this.state.location,
+      from: this.state.from,
+      to: (this.state.disabled ? null : this.state.to),
+      current: this.state.currentJob,
+      description: this.state.description
+    };
+
+    // To use 'props.history' We DON'T need 'withRouter' because component 'AddExperience'
+    // is routed by <Route> (which adds 'history' to props)
+    this.props.addExperience(newExperience, this.props.history);
   }
 
   /*
@@ -94,7 +112,7 @@ class AddExperience extends Component {
                   error={errors.location}
                 />
 
-                <h6>From Date</h6>
+                <h6>* From Date</h6>
                 <TextFieldGroup
                   name="from"
                   type="date"
@@ -157,6 +175,7 @@ class AddExperience extends Component {
 AddExperience.propTypes = {
   profile: PropTypes.object.isRequired,       // type object
   errors: PropTypes.object.isRequired,        // type object
+  addExperience: PropTypes.func.isRequired,   // type func
 };
 
 // Map 'Redux state' to the 'props' of this component so that we can use them
@@ -166,4 +185,25 @@ const mapStateToProps = (state) => ({
   errors: state.errors
 });
 
-export default connect(mapStateToProps)(AddExperience);
+// Using mapDispatchToProps() STANDARD Notation
+// Attach 'Actions' to 'props' of this component so that it will dispatch them
+//    That way those actions can be called from our components (here in 'on submit') 
+//   'dispatch' is a function provided to us by the Redux store.  
+// ----------------------------------------------------------------------------  
+const mapDispatchToProps = (dispatch) => {
+
+  return {
+    addExperience: (expData, history) => dispatch(addExperienceAction(expData, history))
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddExperience);
+
+// Using mapDispatchToProps() SHORTHAND Notation!
+// (avoid the boilerplate code in mapDispatchToProps() for the common case  )
+// (where the 'action creator arguments' match the 'callback prop arguments')
+// ----------------------------------------------------------------------------
+//export default connect(mapStateToProps, { addExperience: addExperienceAction, 
+// })
+// (AddExperience); 

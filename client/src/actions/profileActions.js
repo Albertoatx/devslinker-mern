@@ -117,3 +117,24 @@ export const deleteUserAndProfileAction = () => {
     }
   }
 };
+
+// Add Experience Action (version without 'currying') 
+//  (almost identical to createProfileAction)
+// ----------------------------------------------------------------------------
+export const addExperienceAction = (experienceData, history) => {
+
+  return function (dispatch) {
+
+    dispatch(clearErrors());
+
+    axios
+      .post('/api/profile/experience', experienceData)
+      .then(res => history.push('/dashboard'))
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  }
+};
