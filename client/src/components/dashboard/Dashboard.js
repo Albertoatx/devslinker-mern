@@ -7,10 +7,12 @@ import PropTypes from 'prop-types';
 // Import custom components
 import Spinner from '../common/Spinner';
 import ProfileActions from './ProfileActions';
+import ListExperiences from '../experience/ListExperiences';
 
 // Import 'action creator' function
 import { getCurrentProfileAction } from '../../actions/profileActions';
 import { deleteUserAndProfileAction } from '../../actions/profileActions';
+import { deleteExperienceAction } from '../../actions/profileActions';
 
 
 // COMPONENT
@@ -45,7 +47,13 @@ class Dashboard extends Component {
               Welcome <Link to={`/profile/${profile.handle}`}>{user.name}</Link>
             </p>
             < ProfileActions />
+
             {/* TODO: Experience and Education */}
+            {/* if we want ListExperience to be a Class component */}
+            {/* <ListExperiences experiences={profile.experience} /> */}
+
+            {/* if we want ListExperience to be a Functional component: pass delete in props */}
+            <ListExperiences experiences={profile.experience} deleteExp={this.props.deleteExperience} />
 
             <div style={{ marginBottom: '60px' }} />  {/* to move button down */}
             <button
@@ -89,6 +97,7 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   getCurrentProfile: PropTypes.func.isRequired,  // type func 
   deleteUserAndProfile: PropTypes.func.isRequired,  // type func 
+  deleteExperience: PropTypes.func.isRequired,   // type func 
   auth: PropTypes.object.isRequired,             // type object
   profile: PropTypes.object.isRequired           // type object
 };
@@ -111,7 +120,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     getCurrentProfile: () => dispatch(getCurrentProfileAction()),
-    deleteUserAndProfile: () => dispatch(deleteUserAndProfileAction())
+    deleteUserAndProfile: () => dispatch(deleteUserAndProfileAction()),
+    deleteExperience: (expId) => dispatch(deleteExperienceAction(expId)),
   }
 };
 

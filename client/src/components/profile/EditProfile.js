@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import isEmpty from '../../validation/is-empty';
 
@@ -412,6 +413,10 @@ class EditProfile extends Component {
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
+            <Link to="/dashboard" className="btn btn-light">
+                Go Back
+              </Link>
+              
               <h1 className="display-4 text-center">Edit your profile</h1>
               <small className="d-block pb-3">* = required fields</small>
 
