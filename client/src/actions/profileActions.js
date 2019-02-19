@@ -181,3 +181,25 @@ export const deleteExperienceAction = (expId) => {
       );
   }
 };
+
+// Delete Education Action (version without 'currying') 
+//  ()
+// ----------------------------------------------------------------------------
+export const deleteEducationAction = (eduId) => {
+
+  return function (dispatch) {
+
+    axios
+      .delete(`/api/profile/education/${eduId}`)
+      .then(res => dispatch({
+        type: GET_PROFILE,
+        payload: res.data /* the profile without the deleted education */
+      }))
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  }
+};

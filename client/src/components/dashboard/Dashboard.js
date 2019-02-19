@@ -8,11 +8,13 @@ import PropTypes from 'prop-types';
 import Spinner from '../common/Spinner';
 import ProfileActions from './ProfileActions';
 import ListExperiences from '../experience/ListExperiences';
+import ListEducations from '../education/ListEducations';
 
 // Import 'action creator' function
 import { getCurrentProfileAction } from '../../actions/profileActions';
 import { deleteUserAndProfileAction } from '../../actions/profileActions';
 import { deleteExperienceAction } from '../../actions/profileActions';
+import { deleteEducationAction } from '../../actions/profileActions';
 
 
 // COMPONENT
@@ -54,6 +56,9 @@ class Dashboard extends Component {
 
             {/* if we want ListExperience to be a Functional component: pass delete in props */}
             <ListExperiences experiences={profile.experience} deleteExp={this.props.deleteExperience} />
+
+            {/* if we want ListEducations to be a Functional component: pass delete in props */}
+            <ListEducations educations={profile.education} deleteEdu={this.props.deleteEducation} />
 
             <div style={{ marginBottom: '60px' }} />  {/* to move button down */}
             <button
@@ -98,6 +103,7 @@ Dashboard.propTypes = {
   getCurrentProfile: PropTypes.func.isRequired,  // type func 
   deleteUserAndProfile: PropTypes.func.isRequired,  // type func 
   deleteExperience: PropTypes.func.isRequired,   // type func 
+  deleteEducation: PropTypes.func.isRequired,   // type func 
   auth: PropTypes.object.isRequired,             // type object
   profile: PropTypes.object.isRequired           // type object
 };
@@ -122,6 +128,7 @@ const mapDispatchToProps = (dispatch) => {
     getCurrentProfile: () => dispatch(getCurrentProfileAction()),
     deleteUserAndProfile: () => dispatch(deleteUserAndProfileAction()),
     deleteExperience: (expId) => dispatch(deleteExperienceAction(expId)),
+    deleteEducation: (eduId) => dispatch(deleteEducationAction(eduId)),
   }
 };
 
@@ -133,6 +140,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 // ----------------------------------------------------------------------------
 //export default connect(mapStateToProps, { 
 // getCurrentProfile: getCurrentProfileAction, 
-// deleteUserAndProfile: deleteUserAndProfileAction 
+// deleteUserAndProfile: deleteUserAndProfileAction,
+// deleteExperience: deleteExperienceAction,
+// deleteEducation: deleteEducationAction 
 // })(Dashboard);
 

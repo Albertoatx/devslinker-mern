@@ -32,24 +32,31 @@ const Experience = (props) => {
     </tr>
   ));
 
+  const experienceResults = experiences.length ? (
+    <table className="table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Title</th>
+          <th>Years</th>
+          <th />
+        </tr>
+      </thead>
+      <tbody>
+        {experienceList}
+      </tbody>
+    </table>
+  ) : (
+      <h6 className="text-danger">You have no Experiences registered!</h6>
+    )
+
   return (
     <div>
+      <br />
       <h4 className="mb-4">Experience Credentials</h4>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Company</th>
-            <th>Title</th>
-            <th>Years</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {experienceList}
-        </tbody>
-      </table>
+      {experienceResults}
     </div>
-  );
+  )
 }
 
 Experience.propTypes = {
