@@ -138,3 +138,24 @@ export const addExperienceAction = (experienceData, history) => {
       );
   }
 };
+
+// Add Education Action (version without 'currying') 
+//  (almost identical to createProfileAction)
+// ----------------------------------------------------------------------------
+export const addEducationAction = (educationData, history) => {
+
+  return function (dispatch) {
+
+    dispatch(clearErrors());
+
+    axios
+      .post('/api/profile/education', educationData)
+      .then(res => history.push('/dashboard'))
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  }
+};
