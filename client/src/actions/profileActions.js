@@ -89,11 +89,38 @@ export const getAllProfilesAction = () => {
       .catch(err =>
         dispatch({
           type: GET_PROFILES,
-          payload: null        /* set the profile redux state to null */
+          payload: null        /* set the 'profile.profiles' redux state to null */
         })
       )
   }
 }
+
+
+// Get Profile info by Handle (version without 'currying')
+// ----------------------------------------------------------------------------
+export const getProfileByHandleAction = (handle) => {
+
+  return function (dispatch) {
+
+    dispatch(setProfileLoading());
+
+    axios
+      .get(`/api/profile/handle/${handle}`)
+      .then(res =>
+        dispatch({
+          type: GET_PROFILE,
+          payload: res.data
+        })
+      )
+      // if there is no profile we don't want an error (nothing wrong with that)
+      .catch(err =>
+        dispatch({
+          type: GET_PROFILE,   /* set the 'profile.profile' redux state to null */
+          payload: null
+        })
+      );
+  }
+};
 
 
 // Create Profile Action (version without 'currying')
