@@ -69,6 +69,33 @@ export const getCurrentProfileAction = () => {
   }
 }
 
+
+// Get All Profiles Action (version without 'currying')
+// ----------------------------------------------------------------------------
+export const getAllProfilesAction = () => {
+
+  return function (dispatch) {
+
+    dispatch(setProfileLoading());
+
+    axios.get('/api/profile/all')
+      .then(res =>
+        dispatch({
+          type: GET_PROFILES,
+          payload: res.data
+        })
+      )
+      // if there are no profiles we don't want an error (nothing wrong with that)
+      .catch(err =>
+        dispatch({
+          type: GET_PROFILES,
+          payload: null        /* set the profile redux state to null */
+        })
+      )
+  }
+}
+
+
 // Create Profile Action (version without 'currying')
 // ----------------------------------------------------------------------------
 export const createProfileAction = (profileData, history) => {

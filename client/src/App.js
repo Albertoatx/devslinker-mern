@@ -23,6 +23,7 @@ import CreateProfile from './components/profile/CreateProfile';
 import EditProfile from './components/profile/EditProfile';
 import AddExperience from './components/experience/AddExperience';
 import AddEducation from './components/education/AddEducation';
+import ListProfiles from './components/profile/ListProfiles';
 
 import './App.css';
 
@@ -75,6 +76,7 @@ class App extends Component {
               <PrivateRoute exact path="/edit-profile" component={EditProfile} />
               <PrivateRoute exact path="/add-experience" component={AddExperience} />
               <PrivateRoute exact path="/add-education" component={AddEducation} />
+              <Route exact path="/profiles" component={ListProfiles} />
             </div>
 
             <Footer />
