@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 // Import custom components
 import Spinner from '../common/Spinner';
+import ProfileItem from './ProfileItem';
 
 // Import 'action creator' function
 import { getAllProfilesAction } from '../../actions/profileActions';
@@ -27,7 +28,9 @@ class ListProfiles extends Component {
       profileItems = <Spinner />;
     } else {
       if (profiles.length > 0) {
-        profileItems = <h2>PROFILES HERE</h2>
+        profileItems = profiles.map(profile => (
+          <ProfileItem key={profile._id} profile={profile} />
+        ));
       } else {
         profileItems = <h4>No profiles found...</h4>;
       }
