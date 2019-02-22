@@ -7,6 +7,8 @@ const validateProfileInput = require('../validation/profile.validator');
 const validateEducationInput = require('../validation/education.validator');
 const validateExperienceInput = require('../validation/experience.validator');
 
+const prependHttp = require("prepend-http");
+
 // ----------------------------------------------------------------------------
 // Helper functions                                                          //
 // ----------------------------------------------------------------------------
@@ -24,7 +26,8 @@ const createObject = (sourceObj, propsArray) => {
 
   propsArray.forEach(prop => {
     // if property exists in the source object -> copy into new object
-    if (sourceObj[prop]) newObj[prop] = sourceObj[prop];
+    // if (sourceObj[prop]) newObj[prop] = sourceObj[prop];
+    if (sourceObj[prop]) newObj[prop] = prependHttp(sourceObj[prop], { https: true });
   });
 
   return newObj;
@@ -153,6 +156,7 @@ exports.upsertUserProfile = (req, res) => {
     ...req.body,
     user: req.user.id,
     skills: uniqueList(skills.split(',').map((skill) => skill.trim())),
+    website: req.body.website ? prependHttp(req.body.website) : '',
     // social: { youtube, twitter, facebook, linkedin, instagram }// PROBLEM: create nulls
     social: createObject(req.body, socialProps)                   // Solution!
   };

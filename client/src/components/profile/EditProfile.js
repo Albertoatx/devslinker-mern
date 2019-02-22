@@ -62,6 +62,7 @@ class EditProfile extends Component {
    * TESTED: It works!!! But if error when sending form it will fill inputs 
    *         with previous values, so we have to type again
    */
+  /*
   componentWillReceiveProps(nextProps) {
 
     //console.log('componentWillReceiveProps()');
@@ -129,7 +130,7 @@ class EditProfile extends Component {
     // }
     
   }
-
+  */
 
   /**
    * componentDidUpdate Lifecycle Method.
@@ -141,7 +142,7 @@ class EditProfile extends Component {
    * 
    * TESTED: It works!!!
    */
-  /*
+  
   componentDidUpdate(prevProps){
 
     const { profile } = this.props;
@@ -216,7 +217,7 @@ class EditProfile extends Component {
       }
     } 
   }
-  */
+  
   
 
   /**
