@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
@@ -106,7 +106,8 @@ const ProfileCreds = (props) => {
 
 
 ProfileCreds.propTypes = {
-  profile: PropTypes.object.isRequired
+  experiences: PropTypes.array.isRequired,
+  educations: PropTypes.array.isRequired,
 }
 
 

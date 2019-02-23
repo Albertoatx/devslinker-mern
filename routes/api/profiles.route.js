@@ -94,5 +94,11 @@ router.put('/education/:edu_id',
   passport.authenticate('jwt', { session: false }),
   profileCtrl.updateEducation);
 
+// ----------------------------------------------------------------------------
+// @route   GET api/profile/github/:username/:count/:sort
+// @desc    Get the 'username' repositories from Github API
+// @access  Public
+router.get('/github/:username/:count/:sort', profileCtrl.getGithubRepos);
+
 
 module.exports = router;

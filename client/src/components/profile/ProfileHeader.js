@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import PropTypes from 'prop-types';
 import isEmpty from '../../validation/is-empty';
@@ -31,7 +31,7 @@ const ProfileHeader = (props) => {
           <a className="text-white p-2"
             key={key}
             href={link}
-            // rel="noopener noreferrer"
+            rel="noopener noreferrer"
             target="_blank">
             <i className={`fab fa-${key} fa-2x`} />
           </a>
@@ -79,6 +79,7 @@ const ProfileHeader = (props) => {
                 <a
                   className="text-white p-2"
                   href={profile.website}
+                  rel="noopener noreferrer"
                   target="_blank"
                 >
                   <i className="fas fa-globe fa-2x" />

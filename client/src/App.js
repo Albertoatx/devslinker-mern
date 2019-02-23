@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 // Redux setup
 import { Provider } from 'react-redux'; /* to associate our Store to our React app */
@@ -25,6 +25,7 @@ import AddExperience from './components/experience/AddExperience';
 import AddEducation from './components/education/AddEducation';
 import ListProfiles from './components/profile/ListProfiles';
 import Profile from './components/profile/Profile';
+import NotFound from './components/common/NotFound';
 
 import './App.css';
 
@@ -67,18 +68,23 @@ class App extends Component {
             <Navbar />
 
             {/*-- <Landing /> only component to be full screen */}
-            <Route exact path="/" component={Landing} />
-            <div className="container">
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/login" component={Login} />
-              {/* <Route exact path="/dashboard" component={Dashboard} /> */}
-              <PrivateRoute exact path="/dashboard" component={Dashboard} />
-              <PrivateRoute exact path="/create-profile" component={CreateProfile} />
-              <PrivateRoute exact path="/edit-profile" component={EditProfile} />
-              <PrivateRoute exact path="/add-experience" component={AddExperience} />
-              <PrivateRoute exact path="/add-education" component={AddEducation} />
-              <Route exact path="/profiles" component={ListProfiles} />
-              <Route exact path="/profile/:handle" component={Profile} />
+            {/* <Route exact path="/" component={Landing} /> */}
+            <div className="">
+              <Switch>
+                <Route exact path="/" component={Landing} />
+                <Route exact path="/register" component={Register} />
+                <Route exact path="/login" component={Login} />
+                {/* <Route exact path="/dashboard" component={Dashboard} /> */}
+                <PrivateRoute exact path="/dashboard" component={Dashboard} />
+                <PrivateRoute exact path="/create-profile" component={CreateProfile} />
+                <PrivateRoute exact path="/edit-profile" component={EditProfile} />
+                <PrivateRoute exact path="/add-experience" component={AddExperience} />
+                <PrivateRoute exact path="/add-education" component={AddEducation} />
+                <Route exact path="/profiles" component={ListProfiles} />
+                <Route exact path="/profile/:handle" component={Profile} />
+                {/* <Route exact path="/not-found" component={NotFound} /> */}
+                <Route component={NotFound} />
+              </Switch>
             </div>
 
             <Footer />

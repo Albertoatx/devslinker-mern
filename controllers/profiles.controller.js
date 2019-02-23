@@ -8,6 +8,8 @@ const validateEducationInput = require('../validation/education.validator');
 const validateExperienceInput = require('../validation/experience.validator');
 
 const prependHttp = require("prepend-http");
+const axios = require("axios");
+const keys = require('../config/keys');
 
 // ----------------------------------------------------------------------------
 // Helper functions                                                          //
@@ -617,5 +619,45 @@ exports.updateEducation = (req, res) => {
     //res.status(500).json({ 'error': 'error updating education from profile' });
   })
 
+}
+
+
+// ----------------------------------------------------------------------------
+// getGithubRepos - A controller method that retrieves a list of repositories
+//                  for the 'Github username' in the request param.
+//                    router.get('/github/:username/:count/:sort'); 
+// ----------------------------------------------------------------------------
+exports.getGithubRepos = (req, res) => {
+
+  let repos;
+
+  //clientId = "f94f992f37ece3565c3c";
+  //clientSecret = "9c7171b2fd78f6ec958a17f9bec8f264fc4095c5";
+  clientId = keys.GITHUB_API_KEY;
+  clientSecret = keys.GITHUB_API_SECRET;
+
+  username = req.params.username;
+  count = req.params.count;
+  sort = req.params.sort;
+
+  const baseUrl = `https://api.github.com/users/${username}/`;
+  const perPageParam = `repos?per_page=${count}`;
+  const sortParam = `&sort=${sort}`;
+  const clientIdParam = `&client_id=${clientId}`;
+  const secretParam = `&client_secret=${clientSecret}`;
+  const fullUrl = baseUrl + perPageParam + sortParam + clientIdParam + secretParam;
+
+  axios({
+    method: "get",
+    url: fullUrl,
+    responseType: "json"
+  })
+    .then(result => {
+      repos = result.data;
+
+      //return res.json({ repos }); // WHOAAAA! This failed in front-end: 'repos.map' not a function
+      return res.json(repos);       // Cannot do a map function over an object
+    })
+    .catch(err => console.log(err));
 }
 

@@ -11,10 +11,6 @@ const ProfileItem = (props) => {
 
   const { profile } = props;
 
-  const avatar = (<div className="col-2">
-    <img src={profile.user.avatar} alt="" className="rounded-circle" />
-  </div>)
-
   return (
     // Card body. Make a row divided in columns for: avatar + main content + list of skills
     <div className="card card-body bg-light mb-3">
