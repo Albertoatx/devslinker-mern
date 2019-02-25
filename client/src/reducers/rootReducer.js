@@ -4,6 +4,7 @@ import { combineReducers } from 'redux';
 import authReducer from './authReducer';
 import errorReducer from './errorReducer';
 import profileReducer from './profileReducer';
+import postReducer from './postReducer';
 
 const rootReducer = combineReducers({
   /* the authReducer will update info on the ‘auth’ property in Redux ‘state’ object */
@@ -14,6 +15,9 @@ const rootReducer = combineReducers({
 
   /* the profile will update info on the ‘profile’ property in Redux ‘state’ object */
   profile: profileReducer,
+
+  /* the post will update info on the 'post' property in Redux ‘state’ object */
+  post: postReducer,
 });
 
 export default rootReducer;
