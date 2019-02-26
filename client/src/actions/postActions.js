@@ -4,6 +4,8 @@ import {
   ADD_POST,
   GET_ERRORS,
   CLEAR_ERRORS,
+  POST_LOADING,
+  GET_POSTS,
 } from './actionTypes';
 
 
@@ -23,6 +25,15 @@ export const clearErrors = () => {
     type: CLEAR_ERRORS
   };
 };
+
+// Post loading (set the 'loading' state in Reducer BEFORE doing the request)
+// ----------------------------------------------------------------------------
+export const setPostLoading = () => {
+  return {
+    type: POST_LOADING /* no payload: we only let reducer know it is loading */
+  };
+};
+
 
 // Add Post Action (version without 'currying')
 // ----------------------------------------------------------------------------
@@ -53,5 +64,31 @@ export const addPostAction = function (postData, history) {
 
       }
       );
+  }
+}
+
+
+// Get All Posts Action (version without 'currying')
+// ----------------------------------------------------------------------------
+export const getAllPostsAction = () => {
+
+  return function (dispatch) {
+
+    dispatch(setPostLoading());
+
+    axios.get('/api/posts')
+      .then(res =>
+        dispatch({
+          type: GET_POSTS,
+          payload: res.data
+        })
+      )
+      // if there are no profiles we don't want an error (nothing wrong with that)
+      .catch(err =>
+        dispatch({
+          type: GET_POSTS,
+          payload: []      /* set the 'post.posts' redux state to null */
+        })
+      )
   }
 }
