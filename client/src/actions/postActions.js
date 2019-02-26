@@ -6,6 +6,8 @@ import {
   CLEAR_ERRORS,
   POST_LOADING,
   GET_POSTS,
+  DELETE_POST,
+  UPDATE_LIKE,
 } from './actionTypes';
 
 
@@ -92,3 +94,50 @@ export const getAllPostsAction = () => {
       )
   }
 }
+
+
+// Delete a Post Action (version without 'currying')
+// ----------------------------------------------------------------------------
+export const deletePostAction = postId => {
+
+  return function (dispatch) {
+    axios
+      .delete(`/api/posts/${postId}`)
+      .then(res =>
+        dispatch({
+          type: DELETE_POST,
+          payload: postId /* send 'postId' because in our Reducer we want to delete the post locally */
+        })
+      )
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  }
+};
+
+
+// Likes or Unlikes a post Action (version without 'currying')
+// ----------------------------------------------------------------------------
+export const likePostAction = postId => {
+
+  return function (dispatch) {
+    axios
+      .post(`/api/posts/like/${postId}`)
+      .then(res =>
+        //dispatch(getAllPostsAction()) // overkill to load all posts because we liked a post
+        dispatch({
+          type: UPDATE_LIKE,
+          payload: res.data   //pass in updated post
+        })
+      )
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  }
+};
