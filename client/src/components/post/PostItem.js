@@ -14,7 +14,7 @@ import { likePostAction } from '../../actions/postActions';
 // COMPONENT
 const PostItem = (props) => {
 
-  const { post, auth } = props;
+  const { post, auth, showActions } = props;
 
   const onDeleteClick = (id) => {
     props.deletePost(id);
@@ -55,29 +55,32 @@ const PostItem = (props) => {
         <div className="col-md-10">
           <p className="lead">{post.text}</p>
 
-          <span>
-            {/* Surround with Anonymous function so that function is NOT called until we click button */}
-            <button onClick={() => { onLikeClick(post._id) }}
-              type="button" className="btn btn-light mr-1">
-              {/* <i className='text-info fas fa-heart' /> */}
-              <i className={`${findUserLike(post.likes) ? "text-danger" : "text-secondary"} fas fa-heart`} />
-              <span className="badge badge-light">{post.likes.length}</span>
-            </button>
+          {showActions ? (
+            // only show post actions if showActions is true
+            <span>
+              {/* Surround with Anonymous function so that function is NOT called until we click button */}
+              <button onClick={() => { onLikeClick(post._id) }}
+                type="button" className="btn btn-light mr-1">
+                {/* <i className='text-info fas fa-heart' /> */}
+                <i className={`${findUserLike(post.likes) ? "text-danger" : "text-secondary"} fas fa-heart`} />
+                <span className="badge badge-light">{post.likes.length}</span>
+              </button>
 
-            <Link to={`/post/${post._id}`} className="btn btn-info mr-1">
-              Comments
+              <Link to={`/post/${post._id}`} className="btn btn-info mr-1">
+                Comments
               </Link>
 
-            {/* Show the delete button ONLY if post is from the user that is logged in */}
-            {post.user === auth.user.id ? (
-              // Surround with Anonymous function so that function is NOT called until we click button
-              <button onClick={() => { onDeleteClick(post._id) }}
-                type="button" className="btn btn-danger mr-1"
-              >
-                <i className="fas fa-times" />
-              </button>
-            ) : null}
-          </span>
+              {/* Show the delete button ONLY if post is from the user that is logged in */}
+              {post.user === auth.user.id ? (
+                // Surround with Anonymous function so that function is NOT called until we click button
+                <button onClick={() => { onDeleteClick(post._id) }}
+                  type="button" className="btn btn-danger mr-1"
+                >
+                  <i className="fas fa-times" />
+                </button>
+              ) : null}
+            </span>
+          ) : null}
 
         </div>
       </div>
@@ -87,6 +90,10 @@ const PostItem = (props) => {
   )
 }
 
+// make 'showActions' true by default
+PostItem.defaultProps = {
+  showActions: true
+};
 
 PostItem.propTypes = {
   post: PropTypes.object.isRequired,

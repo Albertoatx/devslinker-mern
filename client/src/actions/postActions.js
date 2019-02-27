@@ -8,6 +8,7 @@ import {
   GET_POSTS,
   DELETE_POST,
   UPDATE_LIKE,
+  GET_POST,
 } from './actionTypes';
 
 
@@ -90,6 +91,33 @@ export const getAllPostsAction = () => {
         dispatch({
           type: GET_POSTS,
           payload: []      /* set the 'post.posts' redux state to null */
+        })
+      )
+  }
+}
+
+
+// Get All Posts Action (version without 'currying')
+// ----------------------------------------------------------------------------
+export const getPostDetailAction = (postId) => {
+
+  return function (dispatch) {
+
+    dispatch(setPostLoading());
+
+    axios.get(`/api/posts/${postId}`)
+      .then(res =>
+        dispatch({
+          type: GET_POST,
+          payload: res.data
+        })
+      )
+      // if there is no post we don't want an error (nothing wrong with that)
+      .catch(err =>
+        dispatch({
+          type: GET_POST,
+          payload: {}      /* set the 'post.post' redux state */
+          //payload: null     
         })
       )
   }
