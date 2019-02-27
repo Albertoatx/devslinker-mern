@@ -169,3 +169,37 @@ export const likePostAction = postId => {
       );
   }
 };
+
+
+// Add Post Action (version without 'currying')
+// (We need the postId to add a Comment because we have an Array of Posts)
+// ----------------------------------------------------------------------------
+export const addCommentAction = function (postId, commentData, history) {
+
+  return function (dispatch) {
+
+    dispatch(clearErrors());
+
+    // Call API endpoint (returns the updated post with the new comment)
+    axios.post(`/api/posts/${postId}/comments`, commentData)
+      //.then(res => history.push('/xxx')) in 'Register', 'addExperience'
+      .then(res => {
+        dispatch({
+          type: GET_POST,     /* store the updated post in the redux state */
+          payload: res.data
+        });
+
+      }
+      )
+      .catch(err => {
+
+        // If error, 'Thunk' resumes dispatch of the action to the 'errors' Reducer
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        });
+
+      }
+      );
+  }
+}

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 // Import custom components
 import Spinner from '../common/Spinner';
 import PostItem from './PostItem';
+import AddComment from '../comment/AddComment';
 
 // Import 'action creator' function
 import { getPostDetailAction } from '../../actions/postActions';
@@ -48,6 +49,7 @@ class PostDetail extends Component {
           </div>
 
           <PostItem post={post} showActions={false} />
+          <AddComment postId={post._id} />
         </div>
       );
     }

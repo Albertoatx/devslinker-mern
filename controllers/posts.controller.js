@@ -218,8 +218,8 @@ exports.addCommentToPost = (req, res) => {
 
   const newComment = {
     text: req.body.text,
-    //name: req.user.name,
-    //avatar: req.user.avatar,
+    name: req.user.name,
+    avatar: req.user.avatar,
     user: req.user.id
   };
 
