@@ -3,13 +3,14 @@ import { connect } from 'react-redux';  // to connect this component to the redu
 import { withRouter } from 'react-router-dom'; // to redirect from inside an Action
 import { Redirect } from 'react-router-dom';
 
-import classnames from 'classnames';
+//import classnames from 'classnames';
 import PropTypes from 'prop-types';       // define types for 'props' 
 
 import TextFieldGroup from '../common/TextFieldGroup';
 
 // Action to dispatch (will be the 'mapDispatchToProps' param)
 import { registerUserAction } from '../../actions/authActions';
+import { clearErrors } from '../../actions/authActions';
 
 // COMPONENT
 class Register extends Component {
@@ -54,6 +55,11 @@ class Register extends Component {
     } 
   }
   */
+
+  // clear redux errors state when coming from another form (for example, login)
+  componentDidMount() {
+    this.props.clearErrors();
+  }
 
   // Put whatever is typed in our input fields in our component 'state'
   onChange = e => {
@@ -196,6 +202,7 @@ class Register extends Component {
 // Define types (strings, etc) to know what types to expect for our incoming data 
 Register.propTypes = {
   registerUser: PropTypes.func.isRequired,  // type func 
+  clearErrors: PropTypes.func.isRequired,  // type func 
   auth: PropTypes.object.isRequired,        // type object
   errors: PropTypes.object.isRequired       // type object
 };
@@ -217,7 +224,8 @@ const mapDispatchToProps = (dispatch) => {
 
   return {
     // deletePost: (id) => dispatch({type: 'DELETE_POST', id: id})  // example
-    registerUser: (userData, history) => dispatch(registerUserAction(userData, history))
+    registerUser: (userData, history) => dispatch(registerUserAction(userData, history)),
+    clearErrors: () => dispatch(clearErrors())
   }
 }
 

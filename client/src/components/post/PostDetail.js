@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import Spinner from '../common/Spinner';
 import PostItem from './PostItem';
 import AddComment from '../comment/AddComment';
+import ListComments from '../comment/ListComments';
 
 // Import 'action creator' function
 import { getPostDetailAction } from '../../actions/postActions';
@@ -50,6 +51,7 @@ class PostDetail extends Component {
 
           <PostItem post={post} showActions={false} />
           <AddComment postId={post._id} />
+          <ListComments postId={post._id} comments={post.comments} />
         </div>
       );
     }

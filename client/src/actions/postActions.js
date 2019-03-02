@@ -44,12 +44,13 @@ export const addPostAction = function (postData, history) {
 
   return function (dispatch) {
 
-    dispatch(clearErrors());
+    //dispatch(clearErrors());
 
     // Call API endpoint
     axios.post('/api/posts', postData)
       //.then(res => history.push('/xxx')) in 'Register', 'addExperience'
       .then(res => {
+        dispatch(clearErrors());
         dispatch({
           type: ADD_POST,
           payload: res.data
@@ -78,13 +79,16 @@ export const getAllPostsAction = () => {
   return function (dispatch) {
 
     dispatch(setPostLoading());
+    dispatch(clearErrors());
 
     axios.get('/api/posts')
-      .then(res =>
+      .then(res => {
         dispatch({
           type: GET_POSTS,
           payload: res.data
         })
+      }
+
       )
       // if there are no profiles we don't want an error (nothing wrong with that)
       .catch(err =>
@@ -104,6 +108,7 @@ export const getPostDetailAction = (postId) => {
   return function (dispatch) {
 
     dispatch(setPostLoading());
+    dispatch(clearErrors());
 
     axios.get(`/api/posts/${postId}`)
       .then(res =>
@@ -178,12 +183,13 @@ export const addCommentAction = function (postId, commentData, history) {
 
   return function (dispatch) {
 
-    dispatch(clearErrors());
+    //dispatch(clearErrors());
 
     // Call API endpoint (returns the updated post with the new comment)
     axios.post(`/api/posts/${postId}/comments`, commentData)
       //.then(res => history.push('/xxx')) in 'Register', 'addExperience'
       .then(res => {
+        dispatch(clearErrors());
         dispatch({
           type: GET_POST,     /* store the updated post in the redux state */
           payload: res.data
@@ -203,3 +209,27 @@ export const addCommentAction = function (postId, commentData, history) {
       );
   }
 }
+
+
+// Delete a Comment Action (version without 'currying')
+// Deletes a Comment from a particular Post, if success -> returns updated Post
+// ----------------------------------------------------------------------------
+export const deleteCommentAction = (postId, commentId) => {
+
+  return function (dispatch) {
+    axios
+      .delete(`/api/posts/${postId}/comments/${commentId}`)
+      .then(res =>
+        dispatch({
+          type: GET_POST,    /* store the updated post in the redux state */
+          payload: res.data
+        })
+      )
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  }
+};

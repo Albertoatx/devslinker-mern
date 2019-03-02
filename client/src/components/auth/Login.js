@@ -10,6 +10,7 @@ import TextFieldGroup from '../common/TextFieldGroup';
 
 // Import 'action creator' function
 import { loginUserAction } from '../../actions/authActions';
+import { clearErrors } from '../../actions/authActions';
 
 // COMPONENT
 class Login extends Component {
@@ -19,6 +20,11 @@ class Login extends Component {
     password: '',
     errors: {}
   };
+
+  // clear redux errors state when coming from another form (for example, sign up)
+  componentDidMount() {
+    this.props.clearErrors();
+  }
 
   // Put whatever is typed in our component 'state'
   onChange = e => {
@@ -136,6 +142,7 @@ class Login extends Component {
 // Define types (strings, etc) to know what types to expect for our incoming data 
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,     // type func 
+  clearErrors: PropTypes.func.isRequired,     // type func 
   auth: PropTypes.object.isRequired,        // type object
   errors: PropTypes.object.isRequired       // type object
 };
@@ -155,7 +162,8 @@ const mapStateToProps = (state) => ({
 // ----------------------------------------------------------------------------  
 const mapDispatchToProps = (dispatch) => {
   return {
-    loginUser: (userData, history) => dispatch(loginUserAction(userData, history))
+    loginUser: (userData, history) => dispatch(loginUserAction(userData, history)),
+    clearErrors: () => dispatch(clearErrors())
   }
 };
 

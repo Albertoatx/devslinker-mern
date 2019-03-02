@@ -51,6 +51,7 @@ export const getCurrentProfileAction = () => {
   return function (dispatch) {
 
     dispatch(setProfileLoading());
+    dispatch(clearErrors());
 
     axios.get('/api/profile')
       .then(res =>
@@ -77,6 +78,7 @@ export const getAllProfilesAction = () => {
   return function (dispatch) {
 
     dispatch(setProfileLoading());
+    dispatch(clearErrors());
 
     axios.get('/api/profile/all')
       .then(res =>
@@ -103,6 +105,7 @@ export const getProfileByHandleAction = (handle) => {
   return function (dispatch) {
 
     dispatch(setProfileLoading());
+    dispatch(clearErrors());
 
     axios
       .get(`/api/profile/handle/${handle}`)
@@ -129,11 +132,14 @@ export const createProfileAction = (profileData, history) => {
 
   return function (dispatch) {
 
-    dispatch(clearErrors());
+    //dispatch(clearErrors());
 
     axios
       .post('/api/profile', profileData)
-      .then(res => history.push('/dashboard'))
+      .then(res => {
+        dispatch(clearErrors());
+        history.push('/dashboard');
+      })
       .catch(err =>
         dispatch({
           type: GET_ERRORS,
@@ -179,11 +185,14 @@ export const addExperienceAction = (experienceData, history) => {
 
   return function (dispatch) {
 
-    dispatch(clearErrors());
+    //dispatch(clearErrors());
 
     axios
       .post('/api/profile/experience', experienceData)
-      .then(res => history.push('/dashboard'))
+      .then(res => {
+        dispatch(clearErrors());
+        history.push('/dashboard');
+      })
       .catch(err =>
         dispatch({
           type: GET_ERRORS,
@@ -200,11 +209,14 @@ export const addEducationAction = (educationData, history) => {
 
   return function (dispatch) {
 
-    dispatch(clearErrors());
+    //dispatch(clearErrors());
 
     axios
       .post('/api/profile/education', educationData)
-      .then(res => history.push('/dashboard'))
+      .then(res => {
+        dispatch(clearErrors());
+        history.push('/dashboard')
+      })
       .catch(err =>
         dispatch({
           type: GET_ERRORS,

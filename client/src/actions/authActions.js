@@ -29,12 +29,15 @@ export const registerUserAction = function (userData, history) {
 
   return function (dispatch) {
 
-    dispatch(clearErrors());
+    //dispatch(clearErrors());
 
     // Call API endpoint
     axios.post('/api/users/register', userData)
       //.then(res => console.log(res))
-      .then(res => history.push('/login'))
+      .then(res => {
+        dispatch(clearErrors());
+        history.push('/login')
+      })
       .catch(err =>
         // If error, 'Thunk' resumes dispatch of the action to the 'errors' Reducer
         dispatch({
@@ -71,12 +74,15 @@ export const loginUserAction = (userData, history) => {
 
   return function (dispatch) {
 
-    dispatch(clearErrors());
+    // dispatch(clearErrors());
 
     // Call API endpoint
     axios
       .post('/api/users/login', userData)
       .then(res => {
+
+        dispatch(clearErrors());
+
         // Save to localStorage
         const { token } = res.data;
 
