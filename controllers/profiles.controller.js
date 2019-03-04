@@ -631,8 +631,6 @@ exports.getGithubRepos = (req, res) => {
 
   let repos;
 
-  //clientId = "f94f992f37ece3565c3c";
-  //clientSecret = "9c7171b2fd78f6ec958a17f9bec8f264fc4095c5";
   clientId = keys.GITHUB_API_KEY;
   clientSecret = keys.GITHUB_API_SECRET;
 

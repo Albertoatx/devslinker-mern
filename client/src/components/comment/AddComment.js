@@ -35,8 +35,10 @@ class AddComment extends Component {
 
     this.props.addComment(this.props.postId, newComment);
 
-    // TODO: clear the message only if request succeeded
-    this.setState({ text: '' });
+    // TODO: Clear the message only if request succeeded
+    if (this.state.text.length > 10) {
+      this.setState({ text: '' })
+    }
   }
 
   // componentWillReceiveProps(newProps) {

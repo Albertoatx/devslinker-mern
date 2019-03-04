@@ -36,7 +36,9 @@ class AddPost extends Component {
     this.props.addPost(newPost);
 
     // TODO: clear the message only if request succeeded
-    this.setState({ text: '' });
+    if (this.state.text.length > 10) {
+      this.setState({ text: '' })
+    }
   }
 
 
