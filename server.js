@@ -2,6 +2,7 @@ const bodyParser = require('body-parser'); // npm install body-parser --save
 const express = require('express');        // npm install express --save
 const mongoose = require('mongoose');      // npm install mongoose --save
 const passport = require('passport');
+const path = require('path');
 
 // Load our route files
 const users = require('./routes/api/users.route');
@@ -59,6 +60,19 @@ app.get('/', (req, res) => {
 app.use('/api/users', users);
 app.use('/api/profile', profiles); // singular: we never check a list of profiles
 app.use('/api/posts', posts);
+
+// DEPLOYMENT: If in production, serve the static assets (in the 'build' folder)
+// -----------------------------------------------------------------------------
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('client/build'));
+
+  // For any other route, send 'index.html' file (entry point to React app)
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
+
 
 // Use the Express application instance to listen to the port
 app.listen(port, () => console.log(`Server running on port ${port}`));

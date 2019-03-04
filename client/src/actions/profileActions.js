@@ -91,7 +91,8 @@ export const getAllProfilesAction = () => {
       .catch(err =>
         dispatch({
           type: GET_PROFILES,
-          payload: null        /* set the 'profile.profiles' redux state to null */
+          //payload: null        /* set the 'profile.profiles' redux state to null */
+          payload: []        /* avoid endless spinner if no there is no profile */
         })
       )
   }
