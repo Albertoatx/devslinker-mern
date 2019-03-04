@@ -29,9 +29,6 @@ mongoose.connect(dbURI, { useNewUrlParser: true })
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Serve our static resources
-
-
 
 // Here add MIDDLEWARE necessary for REST API's. 
 // -----------------------------------------------------------------------------
@@ -47,13 +44,6 @@ app.use(passport.initialize());
 // Passport config
 require('./config/passport-jwt')(passport);
 
-// ROUTING  
-//------------------------------------------------------------------------------
-// Route to root
-app.get('/', (req, res) => {
-  //console.log('Enrutado generico para mostrar index.html');
-  res.send('Helloooooooooo!!!');
-});
 
 // ROUTING: Use the routing files	
 // -----------------------------------------------------------------------------
